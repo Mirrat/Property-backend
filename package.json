@@ -18,6 +18,7 @@
     "mongoose": "^8.16.1",
     "puppeteer": "^24.14.0",
     "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "^1.31.0"
+    "whatsapp-web.js": "^1.31.0",
+    "wwebjs-mongo": "^1.1.0"
   }
 }
