@@ -1,24 +1,19 @@
 {
-  "name": "server",
+  "name": "whatsapp-property-bot",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "start-bot": "node waClient.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
-    "axios": "^1.10.0",
+    "axios": "^1.6.8",
     "cors": "^2.8.5",
-    "dotenv": "^17.0.1",
-    "express": "^5.1.0",
-    "mongodb": "^6.17.0",
-    "mongoose": "^8.16.1",
-    "puppeteer": "^24.14.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "mongoose": "^7.6.1",
     "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "^1.31.0",
-    "wwebjs-mongo": "^1.1.0"
+    "whatsapp-web.js": "^1.23.0"
   }
 }
+
