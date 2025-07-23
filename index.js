@@ -16,10 +16,10 @@ app.use(express.json());
 // Routes
 app.use("/api", propertyRoutes);
 
-// Health Check Route for Render
-app.get("/api/test", (req, res) => {
-  res.status(200).json({ message: "Health check passed ✅" });
+app.get("/", (req, res) => {
+  res.send("Server is running ✅");
 });
+
 
 // Webhook Verification
 app.get("/webhook", (req, res) => {
