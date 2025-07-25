@@ -5,7 +5,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 
-// ← NEW: pull in the full Puppeteer package so we can locate its bundled Chromium
+// ← KEEP this (you’ll need it to locate your Chromium)
 const puppeteer = require("puppeteer");
 
 const B_JID = process.env.ACCOUNT_B_JID;
@@ -24,8 +24,8 @@ const client = new Client({
   puppeteer: {
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    // ← NEW: explicitly tell whatsapp-web.js which Chromium to launch
-    executablePath: puppeteer.executablePath()
+    // ← ONLY CHANGE: point to the system-installed Chromium
+    executablePath: "/usr/bin/chromium-browser"
   },
 });
 
