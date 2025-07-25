@@ -24,8 +24,8 @@ const client = new Client({
   puppeteer: {
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    // ← ONLY CHANGE: point to the system-installed Chromium
-    executablePath: "/usr/bin/chromium-browser"
+    // ← ONLY CHANGE: point at the Chromium that Puppeteer just installed
+    executablePath: puppeteer.executablePath()
   },
 });
 
@@ -63,13 +63,24 @@ client.on("message", async (msg) => {
     const group = msg._data.notifyName || "Unknown Group";
 
     // 1️⃣ PDF Brochure Handling
-    if (msg.hasMedia && msg.type === "document" && msg._data.mimetype === "application/pdf") {
+    if (
+      msg.hasMedia &&
+      msg.type === "document" &&
+      msg._data.mimetype === "application/pdf"
+    ) {
       const media = await msg.downloadMedia();
       if (media && media.data) {
-        const filenameRaw = msg._data.filename || `brochure_${Date.now()}.pdf`;
-        const safeFilename = filenameRaw.replace(/[^\w\d.\-_]+/g, "_");
+        const filenameRaw =
+          msg._data.filename || `brochure_${Date.now()}.pdf`;
+        const safeFilename = filenameRaw.replace(
+          /[^\w\d.\-_]+/g,
+          "_"
+        );
         const pdfPath = path.join(BROCHURE_DIR, safeFilename);
-        fs.writeFileSync(pdfPath, Buffer.from(media.data, "base64"));
+        fs.writeFileSync(
+          pdfPath,
+          Buffer.from(media.data, "base64")
+        );
         console.log("📎 Brochure saved:", safeFilename);
 
         const rawMessage =
@@ -79,7 +90,9 @@ client.on("message", async (msg) => {
           `Brochure:\n${safeFilename.replace(".pdf", "")}`;
 
         await axios.post(LOCAL_ENDPOINT, { raw: rawMessage });
-        console.log("✅ Brochure metadata sent to backend");
+        console.log(
+          "✅ Brochure metadata sent to backend"
+        );
       } else {
         console.warn("⚠️ PDF media data missing or unreadable");
       }
@@ -95,13 +108,24 @@ client.on("message", async (msg) => {
         `Message:\n${msg.body}`;
 
       try {
-        const response = await axios.post(LOCAL_ENDPOINT, { raw: rawMessage });
-        console.log("✅ Project message stored:", response.data.message);
+        const response = await axios.post(LOCAL_ENDPOINT, {
+          raw: rawMessage,
+        });
+        console.log(
+          "✅ Project message stored:",
+          response.data.message
+        );
       } catch (err) {
-        console.error("❌ Failed to POST to backend:", err.message);
+        console.error(
+          "❌ Failed to POST to backend:",
+          err.message
+        );
       }
     } else {
-      console.log("⚠️ Skipped irrelevant message:", msg.body?.slice(0, 60));
+      console.log(
+        "⚠️ Skipped irrelevant message:",
+        msg.body?.slice(0, 60)
+      );
     }
   } catch (err) {
     console.error("❌ Error handling message:", err.message);
@@ -111,7 +135,9 @@ client.on("message", async (msg) => {
 // 🔁 Auto-reconnect watchdog
 setInterval(() => {
   if (!client.info) {
-    console.warn("⚠️ WhatsApp client info unavailable — attempting reconnect...");
+    console.warn(
+      "⚠️ WhatsApp client info unavailable — attempting reconnect..."
+    );
     client.initialize();
   }
 }, 10000); // every 10 seconds
