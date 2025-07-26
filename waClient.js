@@ -10,7 +10,6 @@ const client = new Client({
     }),
     puppeteer: {
         headless: true,
-        // Use Puppeteer's bundled Chromium instead of system Chrome
         executablePath: puppeteer.executablePath(),
         args: [
             '--no-sandbox',
@@ -26,15 +25,16 @@ const client = new Client({
             '--disable-background-timer-throttling',
             '--disable-backgrounding-occluded-windows',
             '--disable-renderer-backgrounding',
-            '--memory-pressure-off',
-            '--max_old_space_size=4096',
-            '--disable-extensions',
-            '--disable-plugins',
-            '--disable-images',
-            '--disable-javascript',
-            '--virtual-time-budget=5000'
+            '--memory-pressure-off'
         ],
-        timeout: 60000
+        timeout: 60000,
+        // Remove problematic args that interfere with WhatsApp Web
+        defaultViewport: null
+    },
+    // Add webVersionCache to avoid injection issues
+    webVersionCache: {
+        type: 'remote',
+        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
     }
 });
 
@@ -71,11 +71,11 @@ client.on('message', async (message) => {
         
         // Only process group messages
         if (chat.isGroup) {
-            console.log(📨 New message from group "${chat.name}":, message.body.substring(0, 100) + '...');
+            console.log(`📨 New message from group "${chat.name}":`, message.body.substring(0, 100) + '...');
             
             // Send to backend for processing
             if (process.env.LOCAL_BACKEND_ENDPOINT) {
-                const response = await axios.post(${process.env.LOCAL_BACKEND_ENDPOINT}/api/process-message, {
+                const response = await axios.post(`${process.env.LOCAL_BACKEND_ENDPOINT}/api/process-message`, {
                     groupName: chat.name,
                     groupId: chat.id._serialized,
                     message: message.body,
